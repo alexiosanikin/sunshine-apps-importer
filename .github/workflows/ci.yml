@@ -37,10 +37,25 @@ jobs:
             rust:1-slim \
             sh -c '
               apt-get update &&
-              apt-get install -y pkg-config libssl-dev gcc-aarch64-linux-gnu &&
+              apt-get install -y pkg-config gcc-aarch64-linux-gnu wget &&
+              # Build OpenSSL for aarch64
+              wget -q https://www.openssl.org/source/openssl-3.0.16.tar.gz -O openssl.tar.gz &&
+              tar xzf openssl.tar.gz &&
+              cd openssl-3.0.16 &&
+              ./Configure linux-aarch64 \
+                --prefix=/opt/arm64-ssl \
+                --cross-compile-prefix=aarch64-linux-gnu- \
+                no-shared &&
+              make -j$(nproc) &&
+              make install &&
+              cd /volume &&
               rustup target add aarch64-unknown-linux-gnu &&
               RUSTFLAGS="-C link-arg=-s" \
               CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
+              OPENSSL_DIR=/opt/arm64-ssl \
+              OPENSSL_LIB_DIR=/opt/arm64-ssl/lib \
+              OPENSSL_INCLUDE_DIR=/opt/arm64-ssl/include \
+              PKG_CONFIG_ALLOW_CROSS=1 \
               cargo build --release --target aarch64-unknown-linux-gnu
             '
 
