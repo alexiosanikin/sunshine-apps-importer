@@ -21,30 +21,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system deps
+      - name: Build x86_64
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y pkg-config libssl-dev
-          # Cross-compiler + OpenSSL for aarch64
-          if [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
-            sudo apt-get install -y gcc-aarch64-linux-gnu \
-              libssl-dev:aarch64-linux-gnu \
-              pkg-config-aarch64-linux-gnu
-          fi
-
-      - name: Install Rust target
-        run: rustup target add ${{ matrix.target }}
-
-      - name: Build
-        run: |
+          rustup target add ${{ matrix.target }}
           RUSTFLAGS="-C link-arg=-s" \
           cargo build --release --target ${{ matrix.target }}
-        env:
-          OPENSSL_DIR: ${{ matrix.target == 'aarch64-unknown-linux-gnu' && '/usr/lib/aarch64-linux-gnu' || '' }}
-          OPENSSL_LIB_DIR: ${{ matrix.target == 'aarch64-unknown-linux-gnu' && '/usr/lib/aarch64-linux-gnu' || '' }}
-          OPENSSL_INCLUDE_DIR: ${{ matrix.target == 'aarch64-unknown-linux-gnu' && '/usr/include/aarch64-linux-gnu/openssl' || '' }}
-          PKG_CONFIG_ALLOW_CROSS: 1
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+
+      - name: Build aarch64
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/volume \
+            -w /volume \
+            ghcr.io/cross-rs/aarch64-unknown-linux-gnu:main \
+            cargo build --release --target aarch64-unknown-linux-gnu
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -64,11 +55,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install OpenSSL
+        run: |
+          brew install openssl@3
+
       - name: Install Rust target
         run: rustup target add ${{ matrix.target }}
 
       - name: Build
-        run: cargo build --release --target ${{ matrix.target }}
+        run: |
+          OPENSSL_DIR="$(brew --prefix openssl@3)" \
+          OPENSSL_LIB_DIR="$(brew --prefix openssl@3)/lib" \
+          OPENSSL_INCLUDE_DIR="$(brew --prefix openssl@3)/include" \
+          PKG_CONFIG_PATH="$(brew --prefix openssl@3)/lib/pkgconfig" \
+          PKG_CONFIG_ALLOW_CROSS=1 \
+          cargo build --release --target ${{ matrix.target }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
