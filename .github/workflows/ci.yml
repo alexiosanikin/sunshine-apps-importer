@@ -37,7 +37,7 @@ jobs:
             rust:1-slim \
             sh -c '
               apt-get update &&
-              apt-get install -y pkg-config gcc-aarch64-linux-gnu wget perl &&
+              apt-get install -y pkg-config gcc-aarch64-linux-gnu wget perl make &&
               # Build OpenSSL for aarch64
               wget -q https://www.openssl.org/source/openssl-3.0.16.tar.gz -O openssl.tar.gz &&
               tar xzf openssl.tar.gz &&
