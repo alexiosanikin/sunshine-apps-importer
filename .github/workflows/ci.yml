@@ -34,8 +34,15 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/volume \
             -w /volume \
-            ghcr.io/cross-rs/aarch64-unknown-linux-gnu:main \
-            cargo build --release --target aarch64-unknown-linux-gnu
+            rust:1-slim \
+            sh -c '
+              apt-get update &&
+              apt-get install -y pkg-config libssl-dev gcc-aarch64-linux-gnu &&
+              rustup target add aarch64-unknown-linux-gnu &&
+              RUSTFLAGS="-C link-arg=-s" \
+              CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
+              cargo build --release --target aarch64-unknown-linux-gnu
+            '
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
