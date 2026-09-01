@@ -1,0 +1,10 @@
+{
+  "app.name": "Менеджер приложений Sunshine",
+  "cmd.scan": "Сканирование установленных игр",
+  "cmd.scan.games_found": "Найдено {{n}} игр",
+  "cmd.scan.no_games": "Игры не найдены",
+  "cmd.generate": "Генерация конфигурации Sunshine",
+  "cmd.generate.success": "Конфигурация успешно обновлена",
+  "plugin.steam": "Steam",
+  "plugin.egs": "Epic Games Store"
+}

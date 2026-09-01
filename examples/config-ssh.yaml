@@ -1,0 +1,54 @@
+# SSH configuration example
+# Copy to config.yaml and adjust paths/credentials to your remote system
+# This scans game libraries on a remote machine and writes to Sunshine on another
+
+# SSH connection to remote machine with game libraries
+ssh:
+  host: "192.168.1.100"
+  port: 22
+  user: "gamer"
+  # Password auth (optional — key auth preferred)
+  # password: "your_password"
+  # Key auth (recommended)
+  key_path: "~/.ssh/id_ed25519"
+
+# Path to Sunshine config on the REMOTE machine
+sunshine_config_dir:
+  transport: ssh
+  path: "/home/gamer/.config/sunshine"
+
+# Steam library on the REMOTE machine
+steam_path:
+  transport: ssh
+  path: "/home/gamer/.steam/steam"
+
+# Epic Games Store on the REMOTE machine
+egs_manifest_path:
+  transport: ssh
+  path: "/home/gamer/.local/share/EpicGamesLauncher/InstalledGames.json"
+egs_install_path:
+  transport: ssh
+  path: "/mnt/gaming/EpicGames"
+
+# Lutris on the REMOTE machine
+lutris_path:
+  transport: ssh
+  path: "/home/gamer/.local/share/lutris"
+
+# Plugins to scan
+plugins:
+  - steam
+  - egs
+
+# Metadata fetching
+fetch_metadata: false
+steamgrid_api_key: ""
+
+# Use flatpak-spawn for Steam
+use_flat_spawn: false
+
+# Language
+language: "en"
+
+# Dry run mode
+dry_run: false

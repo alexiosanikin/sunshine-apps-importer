@@ -1,0 +1,52 @@
+# Local configuration example
+# Copy to config.yaml and adjust paths to your system
+
+# Path to Sunshine config directory (auto-detected if not set)
+# sunshine_config_dir:
+#   transport: local
+#   path: "/home/user/.config/sunshine"
+
+# Sunshine config path (alternative to sunshine_config_dir)
+# sunshine_config_path: "/home/user/.config/sunshine/sunshine.conf"
+
+# Direct path to apps.json (alternative to sunshine_config_dir)
+# apps_json_path: "/home/user/.config/sunshine/apps.json"
+
+# Steam library path
+steam_path:
+  transport: local
+  path: "/home/user/.steam/steam"
+
+# Epic Games Store manifest and install paths
+egs_manifest_path:
+  transport: local
+  path: "/home/user/.local/share/EpicGamesLauncher/InstalledGames.json"
+egs_install_path:
+  transport: local
+  path: "/mnt/gaming/EpicGames"
+
+# Lutris config path (Linux only)
+lutris_path:
+  transport: local
+  path: "/home/user/.local/share/lutris"
+
+# Plugins to scan (default: steam, egs)
+plugins:
+  - steam
+  - egs
+
+# Metadata fetching
+fetch_metadata: false
+steamgrid_api_key: ""
+
+# Use flatpak-spawn for Steam (default: false)
+use_flat_spawn: false
+
+# Language: en, ru, fr, it, es, el, ka
+language: "en"
+
+# Enable dry run mode (no files written)
+dry_run: false
+
+# Custom backup suffix (default: auto-generated timestamp)
+# backup_suffix: "backup"
